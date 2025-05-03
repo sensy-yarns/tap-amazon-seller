@@ -847,7 +847,7 @@ class ProductsIventoryStream(AmazonSellerStream):
             }
         elif "product_id" in record:
             return {
-                "ASIN": record["product-id"],
+                "ASIN": record["product_id"],
                 "marketplace_id": context.get("marketplace_id"),
             }
         else:
@@ -1624,7 +1624,7 @@ class ProductDetailsV2Stream(AmazonSellerStream):
         th.Property("ASIN", th.StringType),
         th.Property("identifiers", th.CustomType({"type": ["array", "string"]})),
         th.Property("attributes", th.CustomType({"type": ["object", "string"]})),
-       
+        th.Property("summaries", th.CustomType({"type": ["array", "string"]})),
         th.Property("marketplace_id", th.StringType),
     ).to_dict()
 
@@ -1642,7 +1642,7 @@ class ProductDetailsV2Stream(AmazonSellerStream):
             catalog = self.get_sp_catalog_item(context.get("marketplace_id"))
             # Requesting relationships along with this data results in an error. 
             # requesting summaries nullifies other requests and only summaries are part of the response
-            product_include_data = ['attributes','identifiers']
+            product_include_data = ['attributes','identifiers','summaries']
             if self.config.get("products_include_data"):
                 product_include_data = self.config.get("products_include_data")
                 if isinstance(product_include_data, str):
